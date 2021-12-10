@@ -13,6 +13,8 @@
     <button type="button" class="close" onClick="deleteTask({{ task.id }})">
       <span aria-hidden="true">&times;</span>
     </button>
+    <input type="checkbox" onchange="change()"
+           {% if task.status %} checked {% endif %}>
   </li>
   {% endfor %}
 </ul>

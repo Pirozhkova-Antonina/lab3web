@@ -1,3 +1,4 @@
+
 from flask import Blueprint, render_template, request, flash, jsonify
 from flask_login import login_required, current_user
 from .models import Task
@@ -16,7 +17,7 @@ def home():
         if len(task) < 1:
             flash('Task is too short!', category='error')
         else:
-            new_task = Task(data=task, user_id=current_user.id)
+            new_task = Task(data=task,status=False, user_id=current_user.id)
             db.session.add(new_task)
             db.session.commit()
             flash('Task added!', category='success')
@@ -32,6 +33,17 @@ def delete_task():
     if task:
         if task.user_id == current_user.id:
             db.session.delete(task)
+            db.session.commit()
+
+    return jsonify({})
+
+@views.route('/update-status',methods=['POST'])
+def update_status():
+    task = json.loads(request.data)
+    taskId = task['taskId']
+    task = Task.query.get(taskId.update(dict(status=json['status'])))
+    if task:
+        if task.user_id == current_user.id:
             db.session.commit()
 
     return jsonify({})
